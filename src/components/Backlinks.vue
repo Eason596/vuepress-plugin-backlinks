@@ -73,8 +73,16 @@ const backlinks = computed(() => {
     .filter(edge => edge.type === 'link' && edge.target === targetId)
     .map(edge => nodeById.get(edge.source))
     .filter((node): node is GraphNode => Boolean(node))
-    .sort((a, b) => a.title.localeCompare(b.title, pluginOptions.sortLocale, { numeric: true }))
+    .sort((a, b) => compareTitle(a.title, b.title, pluginOptions.sortLocale))
 })
+
+function compareTitle(a: string, b: string, locale: string): number {
+  try {
+    return a.localeCompare(b, locale, { numeric: true })
+  } catch {
+    return a.localeCompare(b, undefined, { numeric: true })
+  }
+}
 
 const resolvedDefaultPageSize = computed(() => props.defaultPageSize ?? pluginOptions.defaultPageSize)
 
