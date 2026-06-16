@@ -45,7 +45,14 @@ const currentPage = ref(1)
 const expanded = ref(true)
 
 function normalizePath(value: string): string {
-  return value
+  let path = value
+  try {
+    path = decodeURI(path)
+  } catch {
+    // Keep the original path if it contains malformed percent escapes.
+  }
+
+  return path
     .replace(/[?#].*$/, '')
     .replace(/\/index\.html$/, '/')
     .replace(/\.html$/, '')
@@ -116,6 +123,14 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;')
 }
 
+const title = computed(() => {
+  const value = pluginOptions.title.trim()
+  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+    return value.slice(1, -1)
+  }
+  return value
+})
+
 watch([() => route.path, pageSize, backlinks], () => {
   currentPage.value = 1
   expanded.value = true
@@ -130,7 +145,7 @@ watch(pageCount, (count) => {
   <section v-if="backlinks.length > 0" class="backlinks" aria-labelledby="backlinks-title">
     <div class="backlinks-header">
       <div>
-        <h2 id="backlinks-title">{{ pluginOptions.title }}</h2>
+        <h2 id="backlinks-title">{{ title }}</h2>
         <span>{{ expanded ? `${rangeStart}-${rangeEnd}` : backlinks.length }} / {{ backlinks.length }}</span>
       </div>
       <button
