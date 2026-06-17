@@ -64,13 +64,12 @@ export default defineUserConfig({
 ```typescript
 import { defineClientConfig } from 'vuepress/client'
 import { Layout } from 'vuepress-theme-plume/client'
-import Backlinks from 'vuepress-plugin-backlinks/src/components/Backlinks.vue'
 
 export default defineClientConfig({
   layouts: {
     Layout: {
       setup() {},
-      components: { Layout, Backlinks },
+      components: { Layout },
       template: `
         <Layout>
           <template #doc-after>
@@ -82,6 +81,8 @@ export default defineClientConfig({
   },
 })
 ```
+
+> 注意：插件会自动注册 `Backlinks` 组件，无需显式导入。
 
 更推荐的方式是创建 Layout 包装组件（见下方「Layout 包装」）。
 
@@ -180,6 +181,8 @@ import { Layout } from 'vuepress-theme-plume/client'
   </Layout>
 </template>
 ```
+
+> 注意：插件会自动注册 `Backlinks` 组件，无需显式导入。
 
 ## 建立反向链接
 
